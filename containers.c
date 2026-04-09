@@ -59,7 +59,6 @@ struct container
     void        (*find_index)(const container_t* self, uint32_t value);
     void        (*max)(const container_t* self);
     void        (*min)(const container_t* self);
-    void        (*print_all)(const container_t* self);
     void        (*duplicate)(container_t* src, container_t* dest);
     void        (*merge)(container_t* src1, container_t* src2, container_t* dest);
     void        (*batch_transfer)(container_t* src, container_t* dest, uint32_t K);
@@ -130,7 +129,6 @@ void container_init(container_t* self, TYPE_CONTAINER type)
     self->find_index = find_index_container;
     self->max = max_container;
     self->min = min_container;
-    self->print_all = print_all_container;
     self->duplicate = duplicate_container;
     self->merge = merge_containers;
     self->batch_transfer = batch_transfer;
@@ -143,24 +141,6 @@ void container_init(container_t* self, TYPE_CONTAINER type)
 void size_container(const container_t* self)
 {   
     printf("%u\n", self->size_container);
-}
-
-void print_all_container(container_t* self) 
-{
-    node_t* tmp_ptr = self->head;
-
-    if (tmp_ptr == NULL) {
-        printf("empty\n");
-        return; 
-    }
-
-    while (tmp_ptr != NULL) {
-        printf("%u ", tmp_ptr->value);
-
-        tmp_ptr = tmp_ptr->ptr_next;
-    }
-
-    return;
 }
 
 void clear_container(container_t* self)
@@ -249,7 +229,7 @@ void find_index_container(const container_t* self, uint32_t value)
 
     while (tmp != NULL) {
         if (tmp->value == value) {
-            printf("%zu\n", idx);
+            printf("%u\n", idx);
             return;
         }
         tmp = tmp->ptr_next;
@@ -354,7 +334,14 @@ void batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t 
             src->tail = current->ptr_prev;
         }
 
-        dest->push_back(dest, tmp_value);
+        if(dest->push_back != NULL) {
+            dest->push_back(dest, tmp_value);
+        } else if(dest->enqueue != NULL) {
+            dest->enqueue(dest, tmp_value);
+        } else if(dest->push != NULL) {
+            dest->push(dest, tmp_value);
+        }
+        
         printf("%u ", tmp_value);
 
         free(current);
@@ -412,7 +399,6 @@ uint32_t pop(container_t* self)
 
     self->size_container--;
 
-    printf("%u\n", tmp_ptr->value);
     free(tmp_ptr);
     return tmp_value;
 }
@@ -452,7 +438,7 @@ void enqueue(container_t* self, uint32_t value)
     return;
 }
 
-void dequeue(container_t* self)
+uint32_t dequeue(container_t* self)
 {
     if (self->size_container == 0) {
         printf("error\n");
@@ -460,6 +446,7 @@ void dequeue(container_t* self)
     }
 
     node_t* tmp_ptr = self->head;
+    uint32_t tmp_value = tmp_ptr->value;
 
     if (self->size_container == 1) {
         self->head = NULL;
@@ -470,9 +457,8 @@ void dequeue(container_t* self)
 
     self->size_container--;
 
-    printf("%u\n", tmp_ptr->value);
     free(tmp_ptr);
-    return;
+    return tmp_value;
 }
 
 void push_front_deque(container_t* self, uint32_t value)
@@ -573,7 +559,7 @@ int main(void)
 
     for(size_t i = 0; i<N; i++){
         if(fgets(buffer, 100, stdin) == NULL){
-            return;
+            return 1;
         }
 
         buffer[strcspn(buffer, "\n")] = '\0';
