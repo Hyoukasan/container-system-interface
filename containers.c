@@ -126,16 +126,16 @@ void container_init(container_t* self, TYPE_CONTAINER type)
     self->clear = clear_container;
     self->reverse = reverse_container;
     self->rotate = rotate_container;
-    self->sort = sort_container;
+    self->sort = NULL;
     self->find_index = find_index_container;
     self->max = max_container;
     self->min = min_container;
-    self->duplicate = duplicate_container;
-    self->merge = merge_containers;
+    self->duplicate = NULL;
+    self->merge = NULL;
     self->batch_transfer = batch_transfer;
     self->batch_transfer_range = batch_transfer_range;
     self->rotate_partial = rotate_partial;
-    self->reverse_partial = reverse_partial;
+    self->reverse_partial = NULL;
     self->print_all = print_all;
 }
 
@@ -441,8 +441,7 @@ void enqueue(container_t* self, uint32_t value)
 uint32_t dequeue(container_t* self)
 {
     if (self->size_container == 0) {
-        printf("error\n");
-        return;
+        return UINT32_MAX;
     }
 
     node_t* tmp_ptr = self->head;
@@ -481,9 +480,6 @@ void push_front_deque(container_t* self, uint32_t value)
     }
 
     self->size_container++;
-
-
-    return;
 }
 
 void push_back_deque(container_t* self, uint32_t value)
@@ -507,17 +503,16 @@ void push_back_deque(container_t* self, uint32_t value)
     self->size_container++;
 }
 
-void pop_back_deque(container_t* self)
+uint32_t pop_back_deque(container_t* self)
 {
     if (self->size_container == 0) {
-        printf("error\n");
-        return;
+        return UINT32_MAX;
     }
 
-    node_t* tmp = self->tail;  
-    printf("%u\n", tmp->value);
+    node_t* tmp_ptr = self->tail;  
+    uint32_t tmp_value = tmp_ptr->value;
 
-    self->tail = tmp->ptr_prev;     
+    self->tail = tmp_ptr->ptr_prev;     
 
     if (self->tail != NULL) {
         self->tail->ptr_next = NULL;   
@@ -525,8 +520,10 @@ void pop_back_deque(container_t* self)
         self->head = NULL;            
     }
 
-    free(tmp);
+    free(tmp_ptr);
     self->size_container--;
+
+    return tmp_value;
 }
 
 void peek_back_deque(const container_t* self)
@@ -571,7 +568,7 @@ int main(void)
 
     char buffer[100];
     uint32_t value;
-    uint64_t result;
+    uint32_t result;
 
     for(size_t i = 0; i<N; i++){
         if(fgets(buffer, 100, stdin) == NULL){
@@ -586,11 +583,11 @@ int main(void)
             continue;
         }
 
-        sscanf(buffer, "%s", command);
-
         if (strcmp(command, "push_stack") == 0) {
             if (sscanf(buffer, "push_stack %u", &value) == 1) {
                 stack.push(&stack, value);
+            } else {
+                printf("error\n");
             }
         }
         else if (strcmp(command, "pop_stack") == 0) {
@@ -658,6 +655,9 @@ int main(void)
             stack.print_all(&stack);
             queue.print_all(&queue);
             deque.print_all(&deque);
+        }
+        else {
+            printf("error\n");
         }
     }
     
