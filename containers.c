@@ -41,8 +41,8 @@ struct container
     void        (*front_queue)(container_t* self);
 
     /*Methods for deque_container*/
-    void        (*push_front)(container_t* self, uint32_t* value);
-    void        (*push_back)(container_t* self, uint32_t* value);
+    void        (*push_front)(container_t* self, uint32_t value);
+    void        (*push_back)(container_t* self, uint32_t value);
     
     uint32_t    (*pop_front)(container_t* self);
     void        (*pop_back)(container_t* self);
@@ -300,6 +300,7 @@ void batch_transfer(container_t* src, container_t* dest, uint32_t K)
 {
     if(src->size_container < K) {
         printf("error\n");
+        return;
     }
 
     if(K == 0) {
@@ -315,19 +316,60 @@ void batch_transfer(container_t* src, container_t* dest, uint32_t K)
             return;
         }
 
-
+        dest->push_back(dest, tmp_value);
+        printf("%u ", tmp_value);
     }
+
+    printf("\n");
 }
 
 void batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t R)
 {
+    if(L > R || L >= src->size_container || R >= src->size_container || (R - L + 1) > src->size_container) {
+        printf("error\n");
+        return;
+    }
 
+    node_t* current = src->head;
+    node_t* next = NULL;
+    uint32_t tmp_value;
+
+    for(size_t i = 0; i < L; i++) {
+        current = current->ptr_next;
+    }
+
+    for(size_t i = 0; i < (R - L + 1); i++) {
+        tmp_value = current->value;
+        next = current->ptr_next;
+
+        if(current->ptr_prev != NULL) {
+            current->ptr_prev->ptr_next = current->ptr_next;
+        } else {
+            src->head = current->ptr_next;
+        }
+
+        if(current->ptr_next != NULL) {
+            current->ptr_next->ptr_prev = current->ptr_prev;
+        } else {
+            src->tail = current->ptr_prev;
+        }
+
+        dest->push_back(dest, tmp_value);
+        printf("%u ", tmp_value);
+
+        free(current);
+        current = next;
+        src->size_container--;
+    }
+
+    printf("\n");
 }
 
 void rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K)
 {
-    if(L > R || L >= (self->size_container - 1) || R > (self->size_container - 1)) {
+    if(L > R || R >= self->size_container) {
         printf("error\n");
+        return;
     }
 
     if(self->size_container == 1 || L == R) {
