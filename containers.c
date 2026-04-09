@@ -64,7 +64,8 @@ struct container
     void        (*batch_transfer)(container_t* src, container_t* dest, uint32_t K);
     void        (*batch_transfer_range)(container_t* src, container_t* dest, size_t L, size_t R);
     void        (*rotate_partial)(container_t* self, size_t L, size_t R, uint32_t K);
-    void        (*reverse_partial)(container_t* self, size_t L, size_t R);           
+    void        (*reverse_partial)(container_t* self, size_t L, size_t R);
+    void        (*print_all)(const container_t* self);           
 };
 
 
@@ -135,7 +136,7 @@ void container_init(container_t* self, TYPE_CONTAINER type)
     self->batch_transfer_range = batch_transfer_range;
     self->rotate_partial = rotate_partial;
     self->reverse_partial = reverse_partial;
-
+    self->print_all = print_all;
 }
 
 void size_container(const container_t* self)
@@ -538,6 +539,21 @@ void peek_back_deque(const container_t* self)
     printf("%u\n", self->tail->value);
 }
 
+void print_all(container_t* container)
+{
+    node_t* tmp_ptr = container->head;
+
+    if(container->size_container == 0) {
+        printf("empty\n");
+    } else {
+        while(tmp_ptr != NULL) {
+            printf("%u ", tmp_ptr->value);
+            tmp_ptr = tmp_ptr->ptr_next;
+        }
+        printf("\n");
+    }
+
+}
 
 int main(void) 
 {
@@ -638,7 +654,11 @@ int main(void)
         else if (strcmp(command, "reverse_deque") == 0) {
             deque.reverse(&deque);
         }
-
+        else if (strcmp(command, "print_all") == 0) {
+            stack.print_all(&stack);
+            queue.print_all(&queue);
+            deque.print_all(&deque);
+        }
     }
     
 }
