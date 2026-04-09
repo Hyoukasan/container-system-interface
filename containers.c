@@ -539,7 +539,7 @@ void peek_back_deque(const container_t* self)
     printf("%u\n", self->tail->value);
 }
 
-void print_all(container_t* container)
+void print_all(const container_t* container)
 {
     node_t* tmp_ptr = container->head;
 
@@ -661,4 +661,5 @@ int main(void)
         }
     }
     
+    return 0;
 }
