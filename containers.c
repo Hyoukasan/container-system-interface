@@ -382,7 +382,6 @@ void push(container_t* self, uint32_t value)
 uint32_t pop(container_t* self)
 {
     if (self->head == NULL) {
-        printf("error\n");
         return UINT32_MAX;
     }
 
@@ -556,6 +555,7 @@ int main(void)
 
     char buffer[100];
     uint32_t value;
+    uint64_t result;
 
     for(size_t i = 0; i<N; i++){
         if(fgets(buffer, 100, stdin) == NULL){
@@ -578,7 +578,12 @@ int main(void)
             }
         }
         else if (strcmp(command, "pop_stack") == 0) {
-            stack.pop(&stack);
+            result = stack.pop(&stack);
+
+            if (result == UINT32_MAX){
+                printf("error\n");
+            } else printf("%u\n", result);
+
         }
         else if (strcmp(command, "peek_stack") == 0) {
             stack.peek(&stack);
