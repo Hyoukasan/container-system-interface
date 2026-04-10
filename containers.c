@@ -79,8 +79,8 @@ struct container
     void        (*rotate)(container_t* self, uint32_t K, uint32_t direction);
     void        (*sort)(container_t* self, uint32_t ascending);
     void        (*find_index)(container_t* self, uint32_t value);
-    uint32_t        (*max)(container_t* self);
-    uint32_t        (*min)(container_t* self);
+    uint32_t    (*max)(container_t* self);
+    uint32_t    (*min)(container_t* self);
     void        (*duplicate)(container_t* src, container_t* dest);
     void        (*merge)(container_t* src1, container_t* src2, container_t* dest);
     void        (*batch_transfer)(container_t* src, container_t* dest, uint32_t K);
@@ -99,47 +99,47 @@ void container_init(container_t* self, TYPE_CONTAINER type)
 
     switch (type) {
         case STACK:
-            self->push = push;
-            self->pop = pop;
-            self->peek = peek;
-            self->enqueue = NULL;
-            self->dequeue = NULL;
+            self->push        = push;
+            self->pop         = pop;
+            self->peek        = peek;
+            self->enqueue     = NULL;
+            self->dequeue     = NULL;
             self->front_queue = NULL;
-            self->push_front = NULL;
-            self->push_back = NULL;
-            self->pop_front = NULL;
-            self->pop_back = NULL;
-            self->peek_front = NULL;
-            self->peek_back = NULL;
+            self->push_front  = NULL;
+            self->push_back   = NULL;
+            self->pop_front   = NULL;
+            self->pop_back    = NULL;
+            self->peek_front  = NULL;
+            self->peek_back   = NULL;
             break;
 
         case QUEUE:
-            self->enqueue = enqueue;
-            self->dequeue = dequeue;
+            self->enqueue     = enqueue;
+            self->dequeue     = dequeue;
             self->front_queue = peek;
-            self->push = NULL;
-            self->pop = NULL;
-            self->peek = NULL;
-            self->push_front = NULL;
-            self->push_back = NULL;
-            self->pop_front = NULL;
-            self->pop_back = NULL;
-            self->peek_front = NULL;
-            self->peek_back = NULL;
+            self->push        = NULL;
+            self->pop         = NULL;
+            self->peek        = NULL;
+            self->push_front  = NULL;
+            self->push_back   = NULL;
+            self->pop_front   = NULL;
+            self->pop_back    = NULL;
+            self->peek_front  = NULL;
+            self->peek_back   = NULL;
             break;
 
         case DEQUE:
-            self->push_front = push_front_deque;
-            self->push_back = push_back_deque;
-            self->pop_front = pop;
-            self->pop_back = pop_back_deque;
-            self->peek_front = peek;
-            self->peek_back = peek_back_deque;
-            self->push = NULL;
-            self->pop = NULL;
-            self->peek = NULL;
-            self->enqueue = NULL;
-            self->dequeue = NULL;
+            self->push_front  = push_front_deque;
+            self->push_back   = push_back_deque;
+            self->pop_front   = pop;
+            self->pop_back    = pop_back_deque;
+            self->peek_front  = peek;
+            self->peek_back   = peek_back_deque;
+            self->push        = NULL;
+            self->pop         = NULL;
+            self->peek        = NULL;
+            self->enqueue     = NULL;
+            self->dequeue     = NULL;
             self->front_queue = NULL;
             break;
     }
