@@ -650,9 +650,15 @@ void print_all(container_t* container)
 
 }
 
-void cmd_table(char* command)
+CMD_TYPE cmd_table(char* command)
 {
+    for(size_t i = 0; cmd_dict[i].command != NULL; i++) {
+        if(strcmp(cmd_dict[i].command, command) == 0) {
+            return cmd_dict[i].id;
+        }
+    }
 
+    return CMD_ERR;
 }
 
 int main(void) 
