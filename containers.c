@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h> 
+#include <limits.h>
 
 typedef struct container container_t; 
 typedef struct node node_t;
@@ -24,9 +25,13 @@ void        rotate_container(container_t* self, uint8_t direction, int K);
 void        find_index_container(container_t* self, int value);
 int         max_container(container_t* self);
 int         min_container(container_t* self);
+void        duplicate_container(container_t* src, container_t* dest);
 void        batch_transfer(container_t* src, container_t* dest, int K);
 void        batch_transfer_range(container_t* src, container_t* dest, int L, int R);
 void        rotate_partial(container_t* self, int L, int R, int K);
+void        reverse_partial(container_t* self, int L, int R);
+void        sort_container(container_t* self, uint8_t ascending);
+void        merge_containers(container_t* src1, container_t* src2, container_t* dest);
 void        print_all(container_t* container);
 
 struct node
@@ -242,7 +247,7 @@ void container_init(container_t* self, TYPE_CONTAINER type)
     self->find_index           = find_index_container;
     self->max_                 = max_container;
     self->min_                 = min_container;
-    self->duplicate            = NULL;
+    self->duplicate            = duplicate_container;
     self->merge                = NULL;
     self->batch_transfer       = batch_transfer;
     self->batch_transfer_range = batch_transfer_range;
@@ -391,7 +396,7 @@ void rotate_container(container_t* self, uint8_t direction, int K)
 
 void batch_transfer(container_t* src, container_t* dest, int K)
 {
-    if(src->size_container < K) {
+    if(K < 0 || src->size_container < (size_t)K) {
         printf("error\n");
         return;
     }
@@ -403,15 +408,28 @@ void batch_transfer(container_t* src, container_t* dest, int K)
     int tmp_value;
 
     for(size_t i = 0; i < K; i++) {
-        tmp_value = src->pop(src);
 
-        if (tmp_value == INT32_MAX) {
+        if(src->pop != NULL) {
+            tmp_value = src->pop(src);
+        } else if(src->dequeue != NULL) {
+            tmp_value = src->dequeue(src);
+        } else if(src->pop_front != NULL) {
+            tmp_value = src->pop_front(src);
+        } else {
             printf("error\n");
             return;
         }
 
-        dest->push_back(dest, tmp_value);
-        printf("%d ", tmp_value);
+        if(dest->push_back != NULL) {
+            dest->push_back(dest, tmp_value);
+        } else if(dest->enqueue != NULL) {
+            dest->enqueue(dest, tmp_value);
+        } else if(dest->push != NULL) {
+            dest->push(dest, tmp_value);
+        }
+
+        if(i > 0) printf(" ");
+        printf("%d", tmp_value);
     }
 
     printf("\n");
@@ -478,6 +496,17 @@ void rotate_partial(container_t* self, int L, int R, int K)
     }
 }
 
+void duplicate_container(container_t* src, container_t* dest) {
+    dest->clear(dest);
+
+    node_t* tmp_ptr = src->head;
+
+    while (tmp_ptr != NULL) {
+        enqueue(dest, tmp_ptr->value);
+        tmp_ptr = tmp_ptr->ptr_next;
+    }
+}
+
 void push(container_t* self, int value) 
 {
     node_t* new_ptr = malloc(sizeof(node_t));
@@ -502,7 +531,7 @@ void push(container_t* self, int value)
 int pop(container_t* self)
 {
     if (self->head == NULL) {
-        return INT32_MAX;
+        return INT_MAX;
     }
 
     node_t* tmp_ptr = self->head;
@@ -707,6 +736,8 @@ int main(void)
     container_t containers[3] = {0};
     CMD_TYPE type_command;
     TYPE_CONTAINER container_type;
+    TYPE_CONTAINER src_type;
+    TYPE_CONTAINER dst_type;
 
     container_init(&containers[STACK], STACK);
     container_init(&containers[QUEUE], QUEUE);
@@ -980,6 +1011,39 @@ int main(void)
                 K = atoi(args[2]);
 
                 containers[container_type].rotate(&containers[container_type], direction, K);
+
+                break;
+
+            case CMD_DUPLICATE_CONTAINER:
+                src_type = search_type_table(args[0]);
+                dst_type = search_type_table(args[1]);
+
+                if(src_type == ERR_TYPE || dst_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+        
+                containers[src_type].duplicate(&containers[src_type], &containers[dst_type]);
+
+                break;
+                
+            case CMD_BATCH_TRANSFER_CONTAINER:
+                if(args[2] == NULL) {
+                    printf("error\n");
+                    break;
+                }
+
+                src_type = search_type_table(args[0]);
+                dst_type = search_type_table(args[1]);
+
+                if(src_type == ERR_TYPE || dst_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+
+                K = atoi(args[2]);
+
+                containers[src_type].batch_transfer(&containers[src_type], &containers[dst_type], K);
 
                 break;
                 
