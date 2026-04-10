@@ -347,6 +347,8 @@ void find_index_container(container_t* self, uint32_t value)
         ++idx;
     }
 
+    printf("error\n");
+
 }
 
 void rotate_container(container_t* self, uint32_t K, uint8_t direction)
@@ -866,17 +868,37 @@ int main(void)
 
                 if(args[0] == NULL) { 
                     printf("error\n");
-                } else {
-                    container_type = search_type_table(args[0]);
+                    break;
+                } 
 
-                    if(container_type == ERR_TYPE) {
-                        printf("error\n");
-                        break;
-                    }
+                container_type = search_type_table(args[0]);
 
-                    containers[container_type].clear(&containers[container_type]);
+                if(container_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
                 }
+
+                containers[container_type].clear(&containers[container_type]);
                 
+                break;
+
+            case CMD_FIND_INDEX_CONTAINER:
+                if(args[0] == NULL || args[1] == NULL) {
+                    printf("error\n");
+                    break;
+                }
+
+                container_type = search_type_table(args[0]);
+
+                if(container_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+
+                K = (uint32_t)atoi(args[1]);
+
+                containers[container_type].find_index(&containers[container_type], K);
+
                 break;
                 
             /*INVALID INPUT*/        
