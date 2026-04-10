@@ -577,13 +577,11 @@ void print_all(container_t* container)
 
 int main(void) 
 {
-    container_t stack_container = {0};
-    container_t queue_container = {0};
-    container_t deque_container = {0};
+    container_t containers[3] = {0};
 
-    container_init(&stack_container, STACK);
-    container_init(&queue_container, QUEUE);
-    container_init(&deque_container, DEQUE);
+    container_init(&containers[STACK], STACK);
+    container_init(&containers[QUEUE], QUEUE);
+    container_init(&containers[DEQUE], DEQUE);
 
     uint32_t N;
     scanf("%u", &N);
@@ -609,16 +607,18 @@ int main(void)
 
         val_str = strtok(NULL, " ");
 
+        /*STACK COMMANDS*/
+
         if(strcmp(command, "push_stack") == 0) {
             if(val_str != NULL) {
                 value = (uint32_t)atoi(val_str);
-                stack_container.push(&stack_container, value);
+                containers[STACK].push(&containers[STACK], value);
             } else {
                 printf("error\n");
             }
         }
         else if(strcmp(command, "pop_stack") == 0) {
-            result = stack_container.pop(&stack_container);
+            result = containers[STACK].pop(&containers[STACK]);
 
             if(result == UINT32_MAX){
                 printf("error\n");
@@ -626,82 +626,89 @@ int main(void)
 
         }
         else if(strcmp(command, "peek_stack") == 0) {
-            stack_container.peek(&stack_container);
+            containers[STACK].peek(&containers[STACK]);
         }
         else if(strcmp(command, "size_stack") == 0) {
-            stack_container.size(&stack_container);
+            containers[STACK].size(&containers[STACK]);
         }
+
+        /*QUEUE COMMANDS*/
 
         else if(strcmp(command, "enqueue") == 0) {
             if(val_str != NULL) {
                 value = (uint32_t)atoi(val_str);
-                queue_container.enqueue(&queue_container, value);
+                containers[QUEUE].enqueue(&containers[QUEUE], value);
             } else {
                 printf("error\n");
             }
         }
         else if(strcmp(command, "dequeue") == 0) {
-            result = queue_container.dequeue(&queue_container);
+            result = containers[QUEUE].dequeue(&containers[QUEUE]);
             
             if(result == UINT32_MAX) {
                 printf("error\n");
             } else printf("%u\n", result);
         }
         else if(strcmp(command, "front_queue") == 0) {
-            queue_container.front_queue(&queue_container);
+            containers[QUEUE].front_queue(&containers[QUEUE]);
         }
         else if(strcmp(command, "size_queue") == 0) {
-            queue_container.size(&queue_container);
+            containers[QUEUE].size(&containers[QUEUE]);
         }
         else if(strcmp(command, "reverse_queue") == 0) {
-            queue_container.reverse(&queue_container);
+            containers[QUEUE].reverse(&containers[QUEUE]);
         }
+
+        /*DEQUE COMMANDS*/
 
         else if(strcmp(command, "push_front_deque") == 0) {
             if(val_str != NULL) {
                 value = (uint32_t)atoi(val_str);
-                deque_container.push_front(&deque_container, value);
+                containers[DEQUE].push_front(&containers[DEQUE], value);
             } else printf("error\n");
         }
         else if(strcmp(command, "push_back_deque") == 0) {
             if(val_str != NULL) {
                 value = (uint32_t)atoi(val_str);
-                deque_container.push_back(&deque_container, value);
+                containers[DEQUE].push_back(&containers[DEQUE], value);
             } else printf("error\n");
         }
         else if(strcmp(command, "pop_front_deque") == 0) {
-            result = deque_container.pop_front(&deque_container);
+            result = containers[DEQUE].pop_front(&containers[DEQUE]);
 
             if(result == UINT32_MAX) {
                 printf("error\n");
             } else printf("%u\n", result);
         }
         else if(strcmp(command, "pop_back_deque") == 0) {
-            result = deque_container.pop_back(&deque_container);
+            result = containers[DEQUE].pop_back(&containers[DEQUE]);
 
             if(result == UINT32_MAX) {
                 printf("error\n");
             } else printf("%u\n", result);
         }
         else if(strcmp(command, "peek_front_deque") == 0) {
-            deque_container.peek_front(&deque_container);
+            containers[DEQUE].peek_front(&containers[DEQUE]);
         }
         else if (strcmp(command, "peek_back_deque") == 0) {
-            deque_container.peek_back(&deque_container);
+            containers[DEQUE].peek_back(&containers[DEQUE]);
         }
         else if(strcmp(command, "size_deque") == 0) {
-            deque_container.size(&deque_container);
+            containers[DEQUE].size(&containers[DEQUE]);
         }
         else if(strcmp(command, "reverse_deque") == 0) {
-            deque_container.reverse(&deque_container);
+            containers[DEQUE].reverse(&containers[DEQUE]);
         }
+
+        /*GENERAL COMMANDS*/
+
         else if(strcmp(command, "print_all") == 0) {
-            stack_container.print_all(&stack_container);
-            queue_container.print_all(&queue_container);
-            deque_container.print_all(&deque_container);
+            containers[STACK].print_all(&containers[STACK]);
+            containers[QUEUE].print_all(&containers[QUEUE]);
+            containers[DEQUE].print_all(&containers[DEQUE]);
         }
         else if(strcmp(command, "clear_container")) {
-            
+
         }
         else {
             printf("error\n");
