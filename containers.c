@@ -640,7 +640,11 @@ int main(void)
             }
         }
         else if (strcmp(command, "dequeue") == 0) {
-            queue_container.dequeue(&queue_container);
+            result = queue_container.dequeue(&queue_container);
+            
+            if(result == UINT32_MAX) {
+                printf("error\n");
+            } else printf("%u\n", result);
         }
         else if (strcmp(command, "front_queue") == 0) {
             queue_container.front_queue(&queue_container);
