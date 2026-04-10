@@ -20,8 +20,8 @@ void     clear_container(container_t* self);
 void     reverse_container(container_t* self);
 void     rotate_container(container_t* self, uint32_t K, uint32_t direction);
 void     find_index_container(container_t* self, uint32_t value);
-void     max_container(container_t* self);
-void     min_container(container_t* self);
+uint32_t     max_container(container_t* self);
+uint32_t     min_container(container_t* self);
 void     batch_transfer(container_t* src, container_t* dest, uint32_t K);
 void     batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t R);
 void     rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K);
@@ -79,8 +79,8 @@ struct container
     void        (*rotate)(container_t* self, uint32_t K, uint32_t direction);
     void        (*sort)(container_t* self, uint32_t ascending);
     void        (*find_index)(container_t* self, uint32_t value);
-    void        (*max)(container_t* self);
-    void        (*min)(container_t* self);
+    uint32_t        (*max)(container_t* self);
+    uint32_t        (*min)(container_t* self);
     void        (*duplicate)(container_t* src, container_t* dest);
     void        (*merge)(container_t* src1, container_t* src2, container_t* dest);
     void        (*batch_transfer)(container_t* src, container_t* dest, uint32_t K);
@@ -200,44 +200,42 @@ void reverse_container(container_t* self)
     self->tail = tmp;
 }
 
-void max_container(container_t* self)
+uint32_t max_container(container_t* self)
 {
     if (self->size_container == 0) {
-        printf("error\n");
-        return;
+        return UINT32_MAX;
     }
 
-    node_t* tmp = self->head;
-    node_t* max_node = tmp;
+    node_t* tmp_ptr = self->head;
+    node_t* max_node = tmp_ptr;
 
-    while (tmp != NULL) {
-        if (tmp->value > max_node->value) {
-            max_node = tmp;
+    while (tmp_ptr != NULL) {
+        if (tmp_ptr->value > max_node->value) {
+            max_node = tmp_ptr;
         }
-        tmp = tmp->ptr_next;
+        tmp_ptr = tmp_ptr->ptr_next;
     }
 
-    printf("%u\n", max_node->value);
+    return max_node->value;
 }
 
-void min_container(container_t* self)
+uint32_t min_container(container_t* self)
 {
     if (self->size_container == 0) {
-        printf("error\n");
-        return;
+        return UINT32_MAX;
     }
 
-    node_t* tmp = self->head;
-    node_t* min_node = tmp;
+    node_t* tmp_ptr = self->head;
+    node_t* min_node = tmp_ptr;
 
-    while (tmp != NULL) {
-        if (tmp->value < min_node->value) {
-            min_node = tmp;
+    while (tmp_ptr != NULL) {
+        if (tmp_ptr->value < min_node->value) {
+            min_node = tmp_ptr;
         }
-        tmp = tmp->ptr_next;
+        tmp_ptr = tmp_ptr->ptr_next;
     }
 
-    printf("%u\n", min_node->value);
+    return min_node->value;
 }
 
 void find_index_container(container_t* self, uint32_t value)
