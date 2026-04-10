@@ -20,7 +20,7 @@ void        peek_back_deque(container_t* self);
 void        size(container_t* self);
 void        clear_container(container_t* self);
 void        reverse_container(container_t* self);
-void        rotate_container(container_t* self, uint32_t K, uint8_t direction);
+void        rotate_container(container_t* self, uint8_t direction, uint32_t K);
 void        find_index_container(container_t* self, uint32_t value);
 uint32_t    max_container(container_t* self);
 uint32_t    min_container(container_t* self);
@@ -70,7 +70,7 @@ struct container
     void        (*size)(container_t* self);
     void        (*clear)(container_t* self);
     void        (*reverse)(container_t* self);
-    void        (*rotate)(container_t* self, uint32_t K, uint8_t direction);
+    void        (*rotate)(container_t* self, uint8_t direction, uint32_t K);
     void        (*sort)(container_t* self, uint32_t ascending);
     void        (*find_index)(container_t* self, uint32_t value);
     uint32_t    (*max_)(container_t* self);
@@ -351,7 +351,7 @@ void find_index_container(container_t* self, uint32_t value)
 
 }
 
-void rotate_container(container_t* self, uint32_t K, uint8_t direction)
+void rotate_container(container_t* self, uint8_t direction, uint32_t K)
 {
 
     if(self->size_container <= 1 || K == 0 || K == self->size_container) {
@@ -370,7 +370,7 @@ void rotate_container(container_t* self, uint32_t K, uint8_t direction)
     size_t current_idx = 0;
 
     while(current != NULL) {
-        if(current_idx == K) {
+        if(current_idx == K - 1) {
             break;
         }
 
@@ -481,18 +481,22 @@ void rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K)
 void push(container_t* self, uint32_t value) 
 {
     node_t* new_ptr = malloc(sizeof(node_t));
-
-    if(new_ptr == NULL) {
+    if (new_ptr == NULL) {
         return;
     }
 
     new_ptr->value = value;
     new_ptr->ptr_next = self->head;
     new_ptr->ptr_prev = NULL;
+
+    if (self->head == NULL) {
+        self->tail = new_ptr;
+    } else {
+        self->head->ptr_prev = NULL;
+    }
+
     self->head = new_ptr;
     self->size_container++;
-
-    return;
 }
 
 uint32_t pop(container_t* self)
@@ -691,6 +695,14 @@ TYPE_CONTAINER search_type_table(char* container_type)
     return ERR_TYPE;
 }
 
+uint8_t direction_container(char* direction){
+    if(strcmp(direction, "left") == 0) {
+        return 0;
+    } else if(strcmp(direction, "right") == 0) {
+        return 1;
+    } else return UINT8_MAX;
+}
+
 int main(void) 
 {
     container_t containers[3] = {0};
@@ -724,6 +736,7 @@ int main(void)
         buffer[strcspn(buffer, "\n\r")] = '\0';
 
         command = strtok(buffer, " ");
+        
         type_command = search_cmd_table(command);
 
         if(type_command == CMD_ERR) {
@@ -945,6 +958,32 @@ int main(void)
 
                 break;
 
+            case CMD_ROTATE_CONTAINER:
+                if(args[0] == NULL || args[1] == NULL || args[2] == NULL) {
+                    printf("error\n");
+                    break;
+                }
+
+                container_type = search_type_table(args[0]);
+
+                if(container_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }                
+
+                direction = direction_container(args[1]);
+
+                if(direction == UINT8_MAX) {
+                    printf("error\n");
+                    break;
+                }
+
+                K = (uint32_t)atoi(args[2]);
+
+                containers[container_type].rotate(&containers[container_type], direction, K);
+
+                break;
+                
             /*INVALID INPUT*/        
             
             default:
