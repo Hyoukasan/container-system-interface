@@ -722,7 +722,7 @@ int main(void)
 
                 if(result == UINT32_MAX) {
                     printf("error\n");
-                } else printf("%u", result);
+                } else printf("%u\n", result);
 
                 break;
 
@@ -742,7 +742,7 @@ int main(void)
 
                 if(result == UINT32_MAX) {
                     printf("error\n");
-                } else printf("%u", result);
+                } else printf("%u\n", result);
 
                 break;
             
@@ -754,7 +754,7 @@ int main(void)
                 containers[QUEUE].reverse(&containers[QUEUE]);
                 break;
 
-                /*DEQUE COMMANDS*/
+            /*DEQUE COMMANDS*/
 
             case CMD_PUSH_FRONT_DEQUE:
                 value = (uint32_t)atoi(val_str);
@@ -771,7 +771,7 @@ int main(void)
 
                 if(result == UINT32_MAX) {
                     printf("error\n");
-                } else printf("%u", result);
+                } else printf("%u\n", result);
 
                 break;
             
@@ -780,7 +780,7 @@ int main(void)
 
                 if(result == UINT32_MAX) {
                     printf("error\n");
-                } else printf("%u", result);
+                } else printf("%u\n", result);
 
                 break;
             
@@ -793,7 +793,14 @@ int main(void)
                 break;
 
             /*GENERAL COMMANDS*/
+            
+            case CMD_PRINT_ALL_CONTAINER:
+                containers[STACK].print_all(&containers[STACK]);
+                containers[QUEUE].print_all(&containers[QUEUE]);
+                containers[DEQUE].print_all(&containers[DEQUE]);
+                break;
 
+            case CMD
         }
 
     }
