@@ -486,14 +486,76 @@ void batch_transfer_range(container_t* src, container_t* dest, int L, int R)
 
 void rotate_partial(container_t* self, int L, int R, int K)
 {
-    if(L > R || R >= self->size_container) {
+    if(L < 0 || R < 0 || L > R || R >= (int)self->size_container) {
         printf("error\n");
         return;
     }
 
-    if(self->size_container == 1 || L == R) {
+    int len = R - L + 1;
+    K = K % len;
+
+    if(K < 0) {
+        K += len;
+    }
+
+    if(K == 0) {
         return;
     }
+
+    reverse_partial(self, L, L + K - 1);
+    reverse_partial(self, L + K, R);
+    reverse_partial(self, L, R);
+}
+
+void reverse_partial(container_t* self, int L, int R)
+{
+    if(L < 0 || R < 0 || L > R || R >= (int)self->size_container) {
+        printf("error\n");
+        return;
+    }
+
+    node_t* left_ptr = self->head;
+    for(int i = 0; i < L; i++) {
+        left_ptr = left_ptr->ptr_next;
+    }
+
+    node_t* right_ptr = self->head;
+    for(int i = 0; i < R; i++) {
+        right_ptr = right_ptr->ptr_next;
+    }
+
+    int tmp_value;
+
+    while(left_ptr != right_ptr && left_ptr->ptr_prev != right_ptr) {
+        tmp_value = left_ptr->value;
+        left_ptr->value = right_ptr->value;
+        right_ptr->value = tmp_value;
+
+        left_ptr = left_ptr->ptr_next;
+        right_ptr = right_ptr->ptr_prev;
+    }
+}
+
+void merge_containers(container_t* src1, container_t* src2, container_t* dest)
+{
+    dest->clear(dest);
+
+    node_t* tmp_ptr = src1->head;
+    while(tmp_ptr != NULL) {
+        enqueue(dest, tmp_ptr->value);
+        tmp_ptr = tmp_ptr->ptr_next;
+    }
+
+    tmp_ptr = src2->head;
+    while(tmp_ptr != NULL) {
+        enqueue(dest, tmp_ptr->value);
+        tmp_ptr = tmp_ptr->ptr_next;
+    }
+
+    src1->clear(src1);
+    src2->clear(src2);
+
+    print_all(dest);
 }
 
 void duplicate_container(container_t* src, container_t* dest) {
@@ -898,6 +960,10 @@ int main(void)
             case CMD_SIZE_DEQUE:
                 containers[DEQUE].size(&containers[DEQUE]);
                 break;
+
+            case CMD_REVERSE_DEQUE:
+                containers[DEQUE].reverse(&containers[DEQUE]);
+                break;
                     
             /*GENERAL COMMANDS*/
             
@@ -1046,7 +1112,48 @@ int main(void)
                 containers[src_type].batch_transfer(&containers[src_type], &containers[dst_type], K);
 
                 break;
+            
+            case CMD_BATCH_TRANSFER_RANGE_CONTAINER:
+
+                if(args[0] == NULL || args[1] == NULL || args[2] == NULL || args[3] == NULL) {
+                    printf("error\n");
+                    break;
+                }
+
+                src_type = search_type_table(args[0]);
+                dst_type = search_type_table(args[1]);
+
+                if(src_type == ERR_TYPE || dst_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+
+                left = atoi(args[2]);
+                right = atoi(args[3]);
+                containers[src_type].batch_transfer_range(&containers[src_type], &containers[dst_type], left, right);
+
+                break;
                 
+            case CMD_MERGE_CONTAINER:
+
+                if(args[0] == NULL || args[1] == NULL || args[2] == NULL) {
+                    printf("error\n");
+                    break;
+                }
+
+                src_type = search_type_table(args[0]);
+                dst_type = search_type_table(args[1]);
+                container_type = search_type_table(args[2]);
+
+                if(src_type == ERR_TYPE || dst_type == ERR_TYPE || container_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+
+                containers[src_type].merge(&containers[src_type], &containers[dst_type], &containers[container_type]);
+
+                break;
+        
             /*INVALID INPUT*/        
             
             default:
