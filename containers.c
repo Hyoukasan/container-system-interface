@@ -508,6 +508,7 @@ void push_front_deque(container_t* self, uint32_t value)
 void push_back_deque(container_t* self, uint32_t value)
 {
     node_t* new_ptr = malloc(sizeof(node_t));
+    
     if (new_ptr == NULL) {
         return;
     }
