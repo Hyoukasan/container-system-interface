@@ -96,10 +96,12 @@ typedef enum
     CMD_PUSH_STACK,
     CMD_POP_STACK,
     CMD_PEEK_STACK,
+    CMD_SIZE_STACK,
     CMD_ENQUEUE_QUEUE,
     CMD_DEQUEUE_QUEUE,
     CMD_FRONT_QUEUE,
     CMD_REVERSE_QUEUE,
+    CMD_SIZE_QUEUE,
     CMD_PUSH_FRONT_DEQUE,
     CMD_PUSH_BACK_DEQUE,
     CMD_POP_FRONT_DEQUE,
@@ -107,6 +109,7 @@ typedef enum
     CMD_PEEK_FRONT_DEQUE,
     CMD_PEEK_BACK_DEQUE,
     CMD_REVERSE_DEQUE,
+    CMD_SIZE_DEQUE,
     CMD_ROTATE_CONTAINER,
     CMD_SORT_CONTAINER,
     CMD_BATCH_TRANSFER_CONTAINER,
@@ -119,7 +122,6 @@ typedef enum
     CMD_CLEAR_CONTAINER,
     CMD_DUPLICATE_CONTAINER,
     CMD_MERGE_CONTAINER,
-    CMD_SIZE_CONTAINER,
     CMD_PRINT_ALL_CONTAINER,
     CMD_ERR
 } CMD_TYPE;
@@ -134,11 +136,11 @@ static const cmd_table_t cmd_dict[] = {
     {"push_stack",           CMD_PUSH_STACK},
     {"pop_stack",            CMD_POP_STACK},
     {"peek_stack",           CMD_PEEK_STACK},
-    {"size_stack",           CMD_SIZE_CONTAINER},
+    {"size_stack",           CMD_SIZE_STACK},
     {"enqueue",              CMD_ENQUEUE_QUEUE},
     {"dequeue",              CMD_DEQUEUE_QUEUE},
     {"front_queue",          CMD_FRONT_QUEUE},
-    {"size_queue",           CMD_SIZE_CONTAINER},
+    {"size_queue",           CMD_SIZE_QUEUE},
     {"reverse_queue",        CMD_REVERSE_QUEUE},
     {"push_front_deque",     CMD_PUSH_FRONT_DEQUE},
     {"push_back_deque",      CMD_PUSH_BACK_DEQUE},
@@ -146,7 +148,7 @@ static const cmd_table_t cmd_dict[] = {
     {"pop_back_deque",       CMD_POP_BACK_DEQUE},
     {"peek_front_deque",     CMD_PEEK_FRONT_DEQUE},
     {"peek_back_deque",      CMD_PEEK_BACK_DEQUE},
-    {"size_deque",           CMD_SIZE_CONTAINER},
+    {"size_deque",           CMD_SIZE_DEQUE},
     {"reverse_deque",        CMD_REVERSE_DEQUE},
     {"rotate_container",     CMD_ROTATE_CONTAINER},
     {"sort_container",       CMD_SORT_CONTAINER},
@@ -234,7 +236,7 @@ void container_init(container_t* self, TYPE_CONTAINER type)
     self->print_all            = print_all;
 }
 
-void size_container(container_t* self)
+void size(container_t* self)
 {   
     printf("%u\n", self->size_container);
 }
@@ -730,6 +732,10 @@ int main(void)
                 containers[STACK].peek(&containers[STACK]);
                 break;
             
+            case CMD_SIZE_STACK:
+                containers[STACK].size(&containers[STACK]);
+                break;
+
             /*QUEUE COMMANDS*/
 
             case CMD_ENQUEUE_QUEUE:
@@ -800,7 +806,7 @@ int main(void)
                 containers[DEQUE].print_all(&containers[DEQUE]);
                 break;
 
-            case CMD
+            case 
         }
 
     }
