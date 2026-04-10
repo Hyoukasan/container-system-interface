@@ -6,26 +6,26 @@
 typedef struct container container_t; 
 typedef struct node node_t;
 
-void     push(container_t* self, uint32_t value);
-uint32_t pop(container_t* self);
-void     peek(container_t* self);
-void     enqueue(container_t* self, uint32_t value);
-uint32_t dequeue(container_t* self);
-void     push_front_deque(container_t* self, uint32_t value);
-void     push_back_deque(container_t* self, uint32_t value);
-uint32_t pop_back_deque(container_t* self);
-void     peek_back_deque(container_t* self);
-void     size_container(container_t* self);
-void     clear_container(container_t* self);
-void     reverse_container(container_t* self);
-void     rotate_container(container_t* self, uint32_t K, uint32_t direction);
-void     find_index_container(container_t* self, uint32_t value);
-uint32_t     max_container(container_t* self);
-uint32_t     min_container(container_t* self);
-void     batch_transfer(container_t* src, container_t* dest, uint32_t K);
-void     batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t R);
-void     rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K);
-void     print_all(container_t* container);
+void        push(container_t* self, uint32_t value);
+uint32_t    pop(container_t* self);
+void        peek(container_t* self);
+void        enqueue(container_t* self, uint32_t value);
+uint32_t    dequeue(container_t* self);
+void        push_front_deque(container_t* self, uint32_t value);
+void        push_back_deque(container_t* self, uint32_t value);
+uint32_t    pop_back_deque(container_t* self);
+void        peek_back_deque(container_t* self);
+void        size_container(container_t* self);
+void        clear_container(container_t* self);
+void        reverse_container(container_t* self);
+void        rotate_container(container_t* self, uint32_t K, uint32_t direction);
+void        find_index_container(container_t* self, uint32_t value);
+uint32_t    max_container(container_t* self);
+uint32_t    min_container(container_t* self);
+void        batch_transfer(container_t* src, container_t* dest, uint32_t K);
+void        batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t R);
+void        rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K);
+void        print_all(container_t* container);
 
 struct node
 {
