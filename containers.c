@@ -8,30 +8,30 @@ typedef struct node node_t;
 typedef struct cmd_table cmd_table_t;
 typedef struct type_table type_table_t;
 
-void        push(container_t* self, uint32_t value);
-uint32_t    pop(container_t* self);
+void        push(container_t* self, int value);
+int         pop(container_t* self);
 void        peek(container_t* self);
-void        enqueue(container_t* self, uint32_t value);
-uint32_t    dequeue(container_t* self);
-void        push_front_deque(container_t* self, uint32_t value);
-void        push_back_deque(container_t* self, uint32_t value);
-uint32_t    pop_back_deque(container_t* self);
+void        enqueue(container_t* self, int value);
+int         dequeue(container_t* self);
+void        push_front_deque(container_t* self, int value);
+void        push_back_deque(container_t* self, int value);
+int         pop_back_deque(container_t* self);
 void        peek_back_deque(container_t* self);
 void        size(container_t* self);
 void        clear_container(container_t* self);
 void        reverse_container(container_t* self);
-void        rotate_container(container_t* self, uint8_t direction, uint32_t K);
-void        find_index_container(container_t* self, uint32_t value);
-uint32_t    max_container(container_t* self);
-uint32_t    min_container(container_t* self);
-void        batch_transfer(container_t* src, container_t* dest, uint32_t K);
-void        batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t R);
-void        rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K);
+void        rotate_container(container_t* self, uint8_t direction, int K);
+void        find_index_container(container_t* self, int value);
+int         max_container(container_t* self);
+int         min_container(container_t* self);
+void        batch_transfer(container_t* src, container_t* dest, int K);
+void        batch_transfer_range(container_t* src, container_t* dest, int L, int R);
+void        rotate_partial(container_t* self, int L, int R, int K);
 void        print_all(container_t* container);
 
 struct node
 {
-    uint32_t value;
+    int value;
     
     node_t*  ptr_next;
     node_t*  ptr_prev;
@@ -45,23 +45,23 @@ struct container
     size_t size_container;
 
     /*Methods for stack_container*/
-    void        (*push)(container_t* self, uint32_t value);
-    uint32_t    (*pop)(container_t* self);
+    void        (*push)(container_t* self, int value);
+    int         (*pop)(container_t* self);
 
     void        (*peek)(container_t* self);
 
     /*Methods for queue_container*/
-    void        (*enqueue)(container_t* self, uint32_t value);
-    uint32_t    (*dequeue)(container_t* self);
+    void        (*enqueue)(container_t* self, int value);
+    int         (*dequeue)(container_t* self);
 
     void        (*front_queue)(container_t* self);
 
     /*Methods for deque_container*/
-    void        (*push_front)(container_t* self, uint32_t value);
-    void        (*push_back)(container_t* self, uint32_t value);
+    void        (*push_front)(container_t* self, int value);
+    void        (*push_back)(container_t* self, int value);
     
-    uint32_t    (*pop_front)(container_t* self);
-    uint32_t    (*pop_back)(container_t* self);
+    int         (*pop_front)(container_t* self);
+    int         (*pop_back)(container_t* self);
 
     void        (*peek_front)(container_t* self);
     void        (*peek_back)(container_t* self);
@@ -70,17 +70,17 @@ struct container
     void        (*size)(container_t* self);
     void        (*clear)(container_t* self);
     void        (*reverse)(container_t* self);
-    void        (*rotate)(container_t* self, uint8_t direction, uint32_t K);
-    void        (*sort)(container_t* self, uint32_t ascending);
-    void        (*find_index)(container_t* self, uint32_t value);
-    uint32_t    (*max_)(container_t* self);
-    uint32_t    (*min_)(container_t* self);
+    void        (*rotate)(container_t* self, uint8_t direction, int K);
+    void        (*sort)(container_t* self, uint8_t ascending);
+    void        (*find_index)(container_t* self, int value);
+    int         (*max_)(container_t* self);
+    int         (*min_)(container_t* self);
     void        (*duplicate)(container_t* src, container_t* dest);
     void        (*merge)(container_t* src1, container_t* src2, container_t* dest);
-    void        (*batch_transfer)(container_t* src, container_t* dest, uint32_t K);
-    void        (*batch_transfer_range)(container_t* src, container_t* dest, size_t L, size_t R);
-    void        (*rotate_partial)(container_t* self, uint32_t L, uint32_t R, uint32_t K);
-    void        (*reverse_partial)(container_t* self, size_t L, size_t R);
+    void        (*batch_transfer)(container_t* src, container_t* dest, int K);
+    void        (*batch_transfer_range)(container_t* src, container_t* dest, int L, int R);
+    void        (*rotate_partial)(container_t* self, int L, int R, int K);
+    void        (*reverse_partial)(container_t* self, int L, int R);
     void        (*print_all)(container_t* self);           
 };
 
@@ -290,10 +290,10 @@ void reverse_container(container_t* self)
     self->tail = tmp;
 }
 
-uint32_t max_container(container_t* self)
+int max_container(container_t* self)
 {
     if (self->size_container == 0) {
-        return UINT32_MAX;
+        return INT_MAX;
     }
 
     node_t* tmp_ptr = self->head;
@@ -309,10 +309,10 @@ uint32_t max_container(container_t* self)
     return max_node->value;
 }
 
-uint32_t min_container(container_t* self)
+int min_container(container_t* self)
 {
     if (self->size_container == 0) {
-        return UINT32_MAX;
+        return INT_MAX;
     }
 
     node_t* tmp_ptr = self->head;
@@ -328,7 +328,7 @@ uint32_t min_container(container_t* self)
     return min_node->value;
 }
 
-void find_index_container(container_t* self, uint32_t value)
+void find_index_container(container_t* self, int value)
 {
     if (self->size_container == 0) {
         printf("error\n");
@@ -351,7 +351,7 @@ void find_index_container(container_t* self, uint32_t value)
 
 }
 
-void rotate_container(container_t* self, uint8_t direction, uint32_t K)
+void rotate_container(container_t* self, uint8_t direction, int K)
 {
 
     if(self->size_container <= 1 || K == 0 || K == self->size_container) {
@@ -389,7 +389,7 @@ void rotate_container(container_t* self, uint8_t direction, uint32_t K)
 
 }
 
-void batch_transfer(container_t* src, container_t* dest, uint32_t K)
+void batch_transfer(container_t* src, container_t* dest, int K)
 {
     if(src->size_container < K) {
         printf("error\n");
@@ -400,24 +400,24 @@ void batch_transfer(container_t* src, container_t* dest, uint32_t K)
         return;
     }
 
-    uint32_t tmp_value;
+    int tmp_value;
 
     for(size_t i = 0; i < K; i++) {
         tmp_value = src->pop(src);
 
-        if (tmp_value == UINT32_MAX) {
+        if (tmp_value == INT32_MAX) {
             printf("error\n");
             return;
         }
 
         dest->push_back(dest, tmp_value);
-        printf("%u ", tmp_value);
+        printf("%d ", tmp_value);
     }
 
     printf("\n");
 }
 
-void batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t R)
+void batch_transfer_range(container_t* src, container_t* dest, int L, int R)
 {
     if(L > R || L >= src->size_container || R >= src->size_container || (R - L + 1) > src->size_container) {
         printf("error\n");
@@ -426,7 +426,7 @@ void batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t 
 
     node_t* current = src->head;
     node_t* next = NULL;
-    uint32_t tmp_value;
+    int tmp_value;
 
     for(size_t i = 0; i < L; i++) {
         current = current->ptr_next;
@@ -456,7 +456,7 @@ void batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t 
             dest->push(dest, tmp_value);
         }
         
-        printf("%u ", tmp_value);
+        printf("%d ", tmp_value);
 
         free(current);
         current = next;
@@ -466,7 +466,7 @@ void batch_transfer_range(container_t* src, container_t* dest, size_t L, size_t 
     printf("\n");
 }
 
-void rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K)
+void rotate_partial(container_t* self, int L, int R, int K)
 {
     if(L > R || R >= self->size_container) {
         printf("error\n");
@@ -478,7 +478,7 @@ void rotate_partial(container_t* self, uint32_t L, uint32_t R, uint32_t K)
     }
 }
 
-void push(container_t* self, uint32_t value) 
+void push(container_t* self, int value) 
 {
     node_t* new_ptr = malloc(sizeof(node_t));
     if (new_ptr == NULL) {
@@ -499,14 +499,14 @@ void push(container_t* self, uint32_t value)
     self->size_container++;
 }
 
-uint32_t pop(container_t* self)
+int pop(container_t* self)
 {
     if (self->head == NULL) {
-        return UINT32_MAX;
+        return INT32_MAX;
     }
 
     node_t* tmp_ptr = self->head;
-    uint32_t tmp_value = tmp_ptr->value;
+    int tmp_value = tmp_ptr->value;
 
     self->head = self->head->ptr_next;
 
@@ -529,10 +529,10 @@ void peek(container_t* self)
         return;
     }
 
-    printf("%u\n",self->head->value);
+    printf("%d\n",self->head->value);
 }
 
-void enqueue(container_t* self, uint32_t value)
+void enqueue(container_t* self, int value)
 {
     node_t* new_ptr = malloc(sizeof(node_t));
 
@@ -557,14 +557,14 @@ void enqueue(container_t* self, uint32_t value)
     return;
 }
 
-uint32_t dequeue(container_t* self)
+int dequeue(container_t* self)
 {
     if (self->size_container == 0) {
-        return UINT32_MAX;
+        return INT_MAX;
     }
 
     node_t* tmp_ptr = self->head;
-    uint32_t tmp_value = tmp_ptr->value;
+    int tmp_value = tmp_ptr->value;
 
     if (self->size_container == 1) {
         self->head = NULL;
@@ -580,7 +580,7 @@ uint32_t dequeue(container_t* self)
     return tmp_value;
 }
 
-void push_front_deque(container_t* self, uint32_t value)
+void push_front_deque(container_t* self, int value)
 {
     node_t* new_ptr = malloc(sizeof(node_t));
 
@@ -602,7 +602,7 @@ void push_front_deque(container_t* self, uint32_t value)
     self->size_container++;
 }
 
-void push_back_deque(container_t* self, uint32_t value)
+void push_back_deque(container_t* self, int value)
 {
     node_t* new_ptr = malloc(sizeof(node_t));
 
@@ -623,15 +623,14 @@ void push_back_deque(container_t* self, uint32_t value)
 
     self->size_container++;
 }
-
-uint32_t pop_back_deque(container_t* self)
+int pop_back_deque(container_t* self)
 {
     if (self->size_container == 0) {
-        return UINT32_MAX;
+        return INT_MAX;
     }
 
     node_t* tmp_ptr = self->tail;  
-    uint32_t tmp_value = tmp_ptr->value;
+    int32_t tmp_value = tmp_ptr->value;
 
     self->tail = tmp_ptr->ptr_prev;     
 
@@ -654,7 +653,7 @@ void peek_back_deque(container_t* self)
         return;
     }
 
-    printf("%u\n", self->tail->value);
+    printf("%d\n", self->tail->value);
 }
 
 void print_all(container_t* container)
@@ -665,7 +664,7 @@ void print_all(container_t* container)
         printf("empty\n");
     } else {
         while(tmp_ptr != NULL) {
-            printf("%u ", tmp_ptr->value);
+            printf("%d ", tmp_ptr->value);
             tmp_ptr = tmp_ptr->ptr_next;
         }
         printf("\n");
@@ -719,11 +718,11 @@ int main(void)
 
     char buffer[100];
     char* args[4];
-    uint32_t value;
-    uint32_t result;
-    uint32_t K;
-    uint32_t left;
-    uint32_t right;
+    int value;
+    int result;
+    int K;
+    int left;
+    int right;
     uint8_t  direction;
 
     char* command = NULL;
@@ -760,16 +759,16 @@ int main(void)
                     break;
                 }
                 
-                value = (uint32_t)atoi(args[0]);
+                value = atoi(args[0]);
                 containers[STACK].push(&containers[STACK], value);
                 break;
 
             case CMD_POP_STACK:
                 result = containers[STACK].pop(&containers[STACK]);
 
-                if(result == UINT32_MAX) {
+                if(result == INT_MAX) {
                     printf("error\n");
-                } else printf("%u\n", result);
+                } else printf("%d\n", result);
 
                 break;
 
@@ -790,16 +789,16 @@ int main(void)
                     break;
                 }
                             
-                value = (uint32_t)atoi(args[0]);
+                value = atoi(args[0]);
                 containers[QUEUE].enqueue(&containers[QUEUE], value);
                 break;
             
             case CMD_DEQUEUE_QUEUE:
                 result = containers[QUEUE].dequeue(&containers[QUEUE]);
 
-                if(result == UINT32_MAX) {
+                if(result == INT_MAX) {
                     printf("error\n");
-                } else printf("%u\n", result);
+                } else printf("%d\n", result);
 
                 break;
             
@@ -824,7 +823,7 @@ int main(void)
                     break;
                 }
                 
-                value = (uint32_t)atoi(args[0]);
+                value = atoi(args[0]);
                 containers[DEQUE].push_front(&containers[DEQUE], value);
                 break;  
             
@@ -835,25 +834,25 @@ int main(void)
                     break;
                 }
                 
-                value = (uint32_t)atoi(args[0]);
+                value = atoi(args[0]);
                 containers[DEQUE].push_back(&containers[DEQUE], value);
                 break;
                 
             case CMD_POP_FRONT_DEQUE:
                 result = containers[DEQUE].pop_front(&containers[DEQUE]);
 
-                if(result == UINT32_MAX) {
+                if(result == INT_MAX) {
                     printf("error\n");
-                } else printf("%u\n", result);
+                } else printf("%d\n", result);
 
                 break;
             
             case CMD_POP_BACK_DEQUE:
                 result = containers[DEQUE].pop_back(&containers[DEQUE]);
 
-                if(result == UINT32_MAX) {
+                if(result == INT_MAX) {
                     printf("error\n");
-                } else printf("%u\n", result);
+                } else printf("%d\n", result);
 
                 break;
             
@@ -908,7 +907,7 @@ int main(void)
                     break;
                 }
 
-                K = (uint32_t)atoi(args[1]);
+                K = atoi(args[1]);
 
                 containers[container_type].find_index(&containers[container_type], K);
 
@@ -930,9 +929,9 @@ int main(void)
                 
                 result = containers[container_type].min_(&containers[container_type]);
 
-                if(result == UINT32_MAX) {
+                if(result == INT_MAX) {
                     printf("error\n");
-                } else printf("%u\n", result);
+                } else printf("%d\n", result);
 
                 break;
 
@@ -952,9 +951,9 @@ int main(void)
                 
                 result = containers[container_type].max_(&containers[container_type]);
 
-                if(result == UINT32_MAX) {
+                if(result == INT32_MAX) {
                     printf("error\n");
-                } else printf("%u\n", result);
+                } else printf("%d\n", result);
 
                 break;
 
@@ -978,7 +977,7 @@ int main(void)
                     break;
                 }
 
-                K = (uint32_t)atoi(args[2]);
+                K = atoi(args[2]);
 
                 containers[container_type].rotate(&containers[container_type], direction, K);
 
