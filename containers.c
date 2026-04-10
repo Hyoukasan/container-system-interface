@@ -508,7 +508,7 @@ void push_front_deque(container_t* self, uint32_t value)
 void push_back_deque(container_t* self, uint32_t value)
 {
     node_t* new_ptr = malloc(sizeof(node_t));
-    
+
     if (new_ptr == NULL) {
         return;
     }
@@ -591,6 +591,11 @@ int main(void)
     char buffer[100];
     uint32_t value;
     uint32_t result;
+    uint32_t K;
+    uint32_t left;
+    uint32_t right;
+    uint8_t direction;
+
     char* val_str = NULL;
 
     for(size_t i = 0; i<N; i++){
