@@ -16,7 +16,7 @@ void        push_front_deque(container_t* self, uint32_t value);
 void        push_back_deque(container_t* self, uint32_t value);
 uint32_t    pop_back_deque(container_t* self);
 void        peek_back_deque(container_t* self);
-void        size_container(container_t* self);
+void        size(container_t* self);
 void        clear_container(container_t* self);
 void        reverse_container(container_t* self);
 void        rotate_container(container_t* self, uint32_t K, uint8_t direction);
@@ -219,7 +219,7 @@ void container_init(container_t* self, TYPE_CONTAINER type)
             break;
     }
 
-    self->size                 = size_container;
+    self->size                 = size;
     self->clear                = clear_container;
     self->reverse              = reverse_container;
     self->rotate               = rotate_container;
@@ -238,7 +238,7 @@ void container_init(container_t* self, TYPE_CONTAINER type)
 
 void size(container_t* self)
 {   
-    printf("%u\n", self->size_container);
+    printf("%zu\n", self->size_container);
 }
 
 void clear_container(container_t* self)
@@ -325,7 +325,7 @@ void find_index_container(container_t* self, uint32_t value)
 
     while (tmp != NULL) {
         if (tmp->value == value) {
-            printf("%u\n", idx);
+            printf("%zu\n", idx);
             return;
         }
         tmp = tmp->ptr_next;
@@ -705,16 +705,16 @@ int main(void)
 
         val_str = strtok(NULL, " ");
 
-        if(val_str == NULL) {
-            printf("error\n");
-            continue;
-        }
-
         switch(type_command){
 
             /*STACK COMMANDS*/
 
             case CMD_PUSH_STACK:
+                if(val_str == NULL){
+                    printf("error\n");
+                    break;
+                }
+                
                 value = (uint32_t)atoi(val_str);
                 containers[STACK].push(&containers[STACK], value);
                 break;
@@ -739,6 +739,11 @@ int main(void)
             /*QUEUE COMMANDS*/
 
             case CMD_ENQUEUE_QUEUE:
+                if(val_str == NULL){
+                    printf("error\n");
+                    break;
+                }
+                            
                 value = (uint32_t)atoi(val_str);
                 containers[QUEUE].enqueue(&containers[QUEUE], value);
                 break;
@@ -760,14 +765,28 @@ int main(void)
                 containers[QUEUE].reverse(&containers[QUEUE]);
                 break;
 
+            case CMD_SIZE_QUEUE:
+                containers[QUEUE].size(&containers[QUEUE]);
+                break;
+    
             /*DEQUE COMMANDS*/
 
             case CMD_PUSH_FRONT_DEQUE:
+                if(val_str == NULL){
+                    printf("error\n");
+                    break;
+                }
+                
                 value = (uint32_t)atoi(val_str);
                 containers[DEQUE].push_front(&containers[DEQUE], value);
                 break;  
             
             case CMD_PUSH_BACK_DEQUE:
+                if(val_str == NULL){
+                    printf("error\n");
+                    break;
+                }
+                
                 value = (uint32_t)atoi(val_str);
                 containers[DEQUE].push_back(&containers[DEQUE], value);
                 break;
@@ -798,6 +817,10 @@ int main(void)
                 containers[DEQUE].peek_back(&containers[DEQUE]);
                 break;
 
+            case CMD_SIZE_DEQUE:
+                containers[DEQUE].size(&containers[DEQUE]);
+                break;
+                    
             /*GENERAL COMMANDS*/
             
             case CMD_PRINT_ALL_CONTAINER:
@@ -805,8 +828,12 @@ int main(void)
                 containers[QUEUE].print_all(&containers[QUEUE]);
                 containers[DEQUE].print_all(&containers[DEQUE]);
                 break;
-
-            case 
+                
+            /*INVALID INPUT*/        
+            
+            default:
+                printf("error\n");
+                break;
         }
 
     }
