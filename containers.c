@@ -474,6 +474,7 @@ uint32_t dequeue(container_t* self)
         self->tail = NULL;
     } else {
         self->head = tmp_ptr->ptr_next;
+        self->head->ptr_prev = NULL;
     }
 
     self->size_container--;
