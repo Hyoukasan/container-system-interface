@@ -658,20 +658,30 @@ int main(void)
         }
 
         else if (strcmp(command, "push_front_deque") == 0) {
-            if (sscanf(buffer, "push_front_deque %u", &value) == 1) {
+            if (val_str != NULL) {
+                value = (uint32_t)atoi(val_str);
                 deque_container.push_front(&deque_container, value);
-            }
+            } else printf("error\n");
         }
         else if (strcmp(command, "push_back_deque") == 0) {
-            if (sscanf(buffer, "push_back_deque %u", &value) == 1) {
+            if (val_str != NULL) {
+                value = (uint32_t)atoi(val_str);
                 deque_container.push_back(&deque_container, value);
-            }
+            } else printf("error\n");
         }
         else if (strcmp(command, "pop_front_deque") == 0) {
-            deque_container.pop_front(&deque_container);
+            result = deque_container.pop_front(&deque_container);
+
+            if(result == UINT32_MAX) {
+                printf("error\n");
+            } else printf("%u\n", result);
         }
         else if (strcmp(command, "pop_back_deque") == 0) {
-            deque_container.pop_back(&deque_container);
+            result = deque_container.pop_back(&deque_container);
+
+            if(result == UINT32_MAX) {
+                printf("error\n");
+            } else printf("%u\n", result);
         }
         else if (strcmp(command, "peek_front_deque") == 0) {
             deque_container.peek_front(&deque_container);
