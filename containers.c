@@ -5,6 +5,7 @@
 
 typedef struct container container_t; 
 typedef struct node node_t;
+typedef struct cmd_table cmd_table_t;
 
 void        push(container_t* self, uint32_t value);
 uint32_t    pop(container_t* self);
@@ -18,7 +19,7 @@ void        peek_back_deque(container_t* self);
 void        size_container(container_t* self);
 void        clear_container(container_t* self);
 void        reverse_container(container_t* self);
-void        rotate_container(container_t* self, uint32_t K, uint32_t direction);
+void        rotate_container(container_t* self, uint32_t K, uint8_t direction);
 void        find_index_container(container_t* self, uint32_t value);
 uint32_t    max_container(container_t* self);
 uint32_t    min_container(container_t* self);
@@ -76,7 +77,7 @@ struct container
     void        (*size)(container_t* self);
     void        (*clear)(container_t* self);
     void        (*reverse)(container_t* self);
-    void        (*rotate)(container_t* self, uint32_t K, uint32_t direction);
+    void        (*rotate)(container_t* self, uint32_t K, uint8_t direction);
     void        (*sort)(container_t* self, uint32_t ascending);
     void        (*find_index)(container_t* self, uint32_t value);
     uint32_t    (*max)(container_t* self);
@@ -90,6 +91,79 @@ struct container
     void        (*print_all)(container_t* self);           
 };
 
+typedef enum
+{
+    CMD_PUSH_STACK,
+    CMD_POP_STACK,
+    CMD_PEEK_STACK,
+    CMD_ENQUEUE_QUEUE,
+    CMD_DEQUEUE_QUEUE,
+    CMD_FRONT_QUEUE,
+    CMD_REVERSE_QUEUE,
+    CMD_PUSH_FRONT_DEQUE,
+    CMD_PUSH_BACK_DEQUE,
+    CMD_POP_FRONT_DEQUE,
+    CMD_POP_BACK_DEQUE,
+    CMD_PEEK_FRONT_DEQUE,
+    CMD_PEEK_BACK_DEQUE,
+    CMD_REVERSE_DEQUE,
+    CMD_ROTATE_CONTAINER,
+    CMD_SORT_CONTAINER,
+    CMD_BATCH_TRANSFER_CONTAINER,
+    CMD_BATCH_TRANSFER_RANGE_CONTAINER,
+    CMD_ROTATE_PARTIAL_CONTAINER,
+    CMD_REVERSE_PARTIAL_CONTAINER,
+    CMD_FIND_INDEX_CONTAINER,
+    CMD_MAX_CONTAINER,
+    CMD_MIN_CONTAINER,
+    CMD_CLEAR_CONTAINER,
+    CMD_DUPLICATE_CONTAINER,
+    CMD_MERGE_CONTAINER,
+    CMD_SIZE_CONTAINER,
+    CMD_PRINT_ALL_CONTAINER,
+    CMD_ERR
+} CMD_TYPE;
+
+struct cmd_table
+{
+    const char* command;
+    CMD_TYPE id;
+};
+
+static const cmd_table_t cmd_dict[] = {
+    {"push_stack", CMD_PUSH_STACK},
+    {"pop_stack", CMD_POP_STACK},
+    {"peek_stack", CMD_PEEK_STACK},
+    {"pop_stack", CMD_POP_STACK},
+    {"size_stack", CMD_SIZE_CONTAINER},
+    {"enqueue", CMD_ENQUEUE_QUEUE},
+    {"dequeue", CMD_DEQUEUE_QUEUE},
+    {"front_queue", CMD_FRONT_QUEUE},
+    {"size_queue", CMD_SIZE_CONTAINER},
+    {"reverse_queue", CMD_REVERSE_QUEUE},
+    {"push_front_deque", CMD_PUSH_FRONT_DEQUE},
+    {"push_back_deque", CMD_PUSH_BACK_DEQUE},
+    {"pop_front_deque", CMD_POP_FRONT_DEQUE},
+    {"pop_back_deque", CMD_POP_BACK_DEQUE},
+    {"peek_front_deque", CMD_PEEK_FRONT_DEQUE},
+    {"peek_back_deque", CMD_PEEK_BACK_DEQUE},
+    {"size_deque", CMD_SIZE_CONTAINER},
+    {"reverse_deque", CMD_REVERSE_DEQUE},
+    {"rotate_container", CMD_ROTATE_CONTAINER},
+    {"sort_container", CMD_SORT_CONTAINER},
+    {"batch_transfer", CMD_BATCH_TRANSFER_CONTAINER},
+    {"batch_transfer_range", CMD_BATCH_TRANSFER_RANGE_CONTAINER},
+    {"rotate_partial", CMD_ROTATE_PARTIAL_CONTAINER},
+    {"reverse_partial", CMD_REVERSE_PARTIAL_CONTAINER},
+    {"find_index", CMD_PUSH_STACK},
+    {"max_container", CMD_PUSH_STACK},
+    {"min_container", CMD_PUSH_STACK},
+    {"clear_container", CMD_PUSH_STACK},
+    {"duplicate_container", CMD_PUSH_STACK},
+    {"merge_containers", CMD_PUSH_STACK},
+    {"print_all", CMD_PUSH_STACK},
+    {NULL, CMD_ERR}
+};
 
 void container_init(container_t* self, TYPE_CONTAINER type) 
 {
@@ -259,7 +333,7 @@ void find_index_container(container_t* self, uint32_t value)
 
 }
 
-void rotate_container(container_t* self, uint32_t K, uint32_t direction)
+void rotate_container(container_t* self, uint32_t K, uint8_t direction)
 {
 
     if(self->size_container <= 1 || K == 0 || K == self->size_container) {
@@ -314,6 +388,7 @@ void batch_transfer(container_t* src, container_t* dest, uint32_t K)
         tmp_value = src->pop(src);
 
         if (tmp_value == UINT32_MAX) {
+            printf("error\n");
             return;
         }
 
@@ -576,6 +651,13 @@ void print_all(container_t* container)
 
 }
 
+void cmd_table(char* command)
+{
+    const char* table = {
+        
+    }
+}
+
 int main(void) 
 {
     container_t containers[3] = {0};
@@ -594,18 +676,20 @@ int main(void)
     uint32_t K;
     uint32_t left;
     uint32_t right;
-    uint8_t direction;
+    uint8_t  direction;
 
+    char* command = NULL;
     char* val_str = NULL;
+    char* container_type = NULL;
 
     for(size_t i = 0; i<N; i++){
         if(fgets(buffer, sizeof(buffer), stdin) == NULL){
             return 1;
         }
 
-        buffer[strcspn(buffer, "\n")] = '\0';
+        buffer[strcspn(buffer, "\n\r")] = '\0';
 
-        char *command = strtok(buffer, " ");
+        command = strtok(buffer, " ");
         if(!command) {
             printf("error\n");
             continue;
