@@ -73,8 +73,8 @@ struct container
     void        (*rotate)(container_t* self, uint32_t K, uint8_t direction);
     void        (*sort)(container_t* self, uint32_t ascending);
     void        (*find_index)(container_t* self, uint32_t value);
-    uint32_t    (*max)(container_t* self);
-    uint32_t    (*min)(container_t* self);
+    uint32_t    (*max_)(container_t* self);
+    uint32_t    (*min_)(container_t* self);
     void        (*duplicate)(container_t* src, container_t* dest);
     void        (*merge)(container_t* src1, container_t* src2, container_t* dest);
     void        (*batch_transfer)(container_t* src, container_t* dest, uint32_t K);
@@ -240,8 +240,8 @@ void container_init(container_t* self, TYPE_CONTAINER type)
     self->rotate               = rotate_container;
     self->sort                 = NULL;
     self->find_index           = find_index_container;
-    self->max                  = max_container;
-    self->min                  = min_container;
+    self->max_                 = max_container;
+    self->min_                 = min_container;
     self->duplicate            = NULL;
     self->merge                = NULL;
     self->batch_transfer       = batch_transfer;
@@ -900,7 +900,51 @@ int main(void)
                 containers[container_type].find_index(&containers[container_type], K);
 
                 break;
+             
+            case CMD_MIN_CONTAINER:
                 
+                if(args[0] == NULL) { 
+                    printf("error\n");
+                    break;
+                } 
+
+                container_type = search_type_table(args[0]);
+
+                if(container_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+                
+                result = containers[container_type].min_(&containers[container_type]);
+
+                if(result == UINT32_MAX) {
+                    printf("error\n");
+                } else printf("%u\n", result);
+
+                break;
+
+            case CMD_MAX_CONTAINER:
+                
+                if(args[0] == NULL) { 
+                    printf("error\n");
+                    break;
+                } 
+
+                container_type = search_type_table(args[0]);
+
+                if(container_type == ERR_TYPE) {
+                    printf("error\n");
+                    break;
+                }
+                
+                result = containers[container_type].max_(&containers[container_type]);
+
+                if(result == UINT32_MAX) {
+                    printf("error\n");
+                } else printf("%u\n", result);
+
+                break;
+
             /*INVALID INPUT*/        
             
             default:
