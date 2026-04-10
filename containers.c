@@ -389,13 +389,15 @@ void push(container_t* self, uint32_t value)
 {
     node_t* new_ptr = malloc(sizeof(node_t));
 
-    if (new_ptr != NULL) {
-        new_ptr->value = value;
-        new_ptr->ptr_next = self->head;
-        new_ptr->ptr_prev = NULL;
-        self->head = new_ptr;
-        self->size_container++;
+    if(new_ptr == NULL) {
+        return;
     }
+
+    new_ptr->value = value;
+    new_ptr->ptr_next = self->head;
+    new_ptr->ptr_prev = NULL;
+    self->head = new_ptr;
+    self->size_container++;
 
     return;
 }
