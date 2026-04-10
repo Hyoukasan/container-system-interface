@@ -6,6 +6,7 @@
 typedef struct container container_t; 
 typedef struct node node_t;
 typedef struct cmd_table cmd_table_t;
+typedef struct type_table type_table_t;
 
 void        push(container_t* self, uint32_t value);
 uint32_t    pop(container_t* self);
@@ -35,14 +36,6 @@ struct node
     node_t*  ptr_next;
     node_t*  ptr_prev;
 };
-
-typedef enum
-{
-    STACK,
-    QUEUE,
-    DEQUE
-
-} TYPE_CONTAINER;
 
 struct container
 {
@@ -164,6 +157,28 @@ static const cmd_table_t cmd_dict[] = {
     {"merge_containers",     CMD_MERGE_CONTAINER},
     {"print_all",            CMD_PRINT_ALL_CONTAINER},
     {NULL,                   CMD_ERR}
+};
+
+typedef enum
+{
+    STACK,
+    QUEUE,
+    DEQUE,
+    ERR_TYPE
+
+} TYPE_CONTAINER;
+
+struct type_table
+{
+    const char* container_type;
+    TYPE_CONTAINER id;
+};
+
+static const type_table_t type_dict[] = {
+    {"STACK", STACK},
+    {"STACK", QUEUE},
+    {"STACK", DEQUE},
+    {NULL, ERR_TYPE}
 };
 
 void container_init(container_t* self, TYPE_CONTAINER type) 
@@ -663,10 +678,22 @@ CMD_TYPE search_cmd_table(char* command)
     return CMD_ERR;
 }
 
+TYPE_CONTAINER search_type_table(char* container_type)
+{
+    for(size_t i = 0; type_dict[i].container_type != NULL; i++){
+        if(strcmp(type_dict[i].container_type, container_type)) {
+            return type_dict[i].container_type;
+        }
+    } 
+
+    return ERR_TYPE;
+}
+
 int main(void) 
 {
     container_t containers[3] = {0};
     CMD_TYPE type_command;
+    TYPE_CONTAINER container_type;
 
     container_init(&containers[STACK], STACK);
     container_init(&containers[QUEUE], QUEUE);
@@ -686,7 +713,6 @@ int main(void)
 
     char* command = NULL;
     char* val_str = NULL;
-    char* container_type = NULL;
 
     for(size_t i = 0; i<N; i++){
         if(fgets(buffer, sizeof(buffer), stdin) == NULL){
@@ -701,6 +727,14 @@ int main(void)
         if(type_command == CMD_ERR) {
             printf("error\n");
             continue;
+        }
+
+        command = strtok(NULL, " ");
+        container_type = search_type_table(command);
+
+        if(container_type == ERR_TYPE) {
+            printf("error\n");
+            continue; 
         }
 
         val_str = strtok(NULL, " ");
