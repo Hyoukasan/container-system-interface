@@ -134,7 +134,6 @@ static const cmd_table_t cmd_dict[] = {
     {"push_stack", CMD_PUSH_STACK},
     {"pop_stack", CMD_POP_STACK},
     {"peek_stack", CMD_PEEK_STACK},
-    {"pop_stack", CMD_POP_STACK},
     {"size_stack", CMD_SIZE_CONTAINER},
     {"enqueue", CMD_ENQUEUE_QUEUE},
     {"dequeue", CMD_DEQUEUE_QUEUE},
@@ -155,13 +154,13 @@ static const cmd_table_t cmd_dict[] = {
     {"batch_transfer_range", CMD_BATCH_TRANSFER_RANGE_CONTAINER},
     {"rotate_partial", CMD_ROTATE_PARTIAL_CONTAINER},
     {"reverse_partial", CMD_REVERSE_PARTIAL_CONTAINER},
-    {"find_index", CMD_PUSH_STACK},
-    {"max_container", CMD_PUSH_STACK},
-    {"min_container", CMD_PUSH_STACK},
-    {"clear_container", CMD_PUSH_STACK},
-    {"duplicate_container", CMD_PUSH_STACK},
-    {"merge_containers", CMD_PUSH_STACK},
-    {"print_all", CMD_PUSH_STACK},
+    {"find_index", CMD_FIND_INDEX_CONTAINER},
+    {"max_container", CMD_MAX_CONTAINER},
+    {"min_container", CMD_MIN_CONTAINER},
+    {"clear_container", CMD_CLEAR_CONTAINER},
+    {"duplicate_container", CMD_DUPLICATE_CONTAINER},
+    {"merge_containers", CMD_MERGE_CONTAINER},
+    {"print_all", CMD_PRINT_ALL_CONTAINER},
     {NULL, CMD_ERR}
 };
 
@@ -653,9 +652,7 @@ void print_all(container_t* container)
 
 void cmd_table(char* command)
 {
-    const char* table = {
-        
-    }
+
 }
 
 int main(void) 
