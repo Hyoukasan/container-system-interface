@@ -176,8 +176,8 @@ struct type_table
 
 static const type_table_t type_dict[] = {
     {"STACK", STACK},
-    {"STACK", QUEUE},
-    {"STACK", DEQUE},
+    {"QUEUE", QUEUE},
+    {"DEQUE", DEQUE},
     {NULL, ERR_TYPE}
 };
 
@@ -681,8 +681,8 @@ CMD_TYPE search_cmd_table(char* command)
 TYPE_CONTAINER search_type_table(char* container_type)
 {
     for(size_t i = 0; type_dict[i].container_type != NULL; i++){
-        if(strcmp(type_dict[i].container_type, container_type)) {
-            return type_dict[i].container_type;
+        if(strcmp(type_dict[i].container_type, container_type) == 0) {
+            return type_dict[i].id;
         }
     } 
 
@@ -704,6 +704,7 @@ int main(void)
     while (getchar() != '\n');
 
     char buffer[100];
+    char* args[4];
     uint32_t value;
     uint32_t result;
     uint32_t K;
@@ -712,7 +713,6 @@ int main(void)
     uint8_t  direction;
 
     char* command = NULL;
-    char* val_str = NULL;
 
     for(size_t i = 0; i<N; i++){
         if(fgets(buffer, sizeof(buffer), stdin) == NULL){
@@ -729,27 +729,23 @@ int main(void)
             continue;
         }
 
-        command = strtok(NULL, " ");
-        container_type = search_type_table(command);
-
-        if(container_type == ERR_TYPE) {
-            printf("error\n");
-            continue; 
-        }
-
-        val_str = strtok(NULL, " ");
+        args[0] = strtok(NULL, " ");
+        args[1] = strtok(NULL, " ");
+        args[2] = strtok(NULL, " ");
+        args[3] = strtok(NULL, " ");
 
         switch(type_command){
 
             /*STACK COMMANDS*/
 
             case CMD_PUSH_STACK:
-                if(val_str == NULL){
+
+                if(args[0] == NULL){
                     printf("error\n");
                     break;
                 }
                 
-                value = (uint32_t)atoi(val_str);
+                value = (uint32_t)atoi(args[0]);
                 containers[STACK].push(&containers[STACK], value);
                 break;
 
@@ -773,12 +769,13 @@ int main(void)
             /*QUEUE COMMANDS*/
 
             case CMD_ENQUEUE_QUEUE:
-                if(val_str == NULL){
+
+                if(args[0] == NULL){
                     printf("error\n");
                     break;
                 }
                             
-                value = (uint32_t)atoi(val_str);
+                value = (uint32_t)atoi(args[0]);
                 containers[QUEUE].enqueue(&containers[QUEUE], value);
                 break;
             
@@ -806,22 +803,24 @@ int main(void)
             /*DEQUE COMMANDS*/
 
             case CMD_PUSH_FRONT_DEQUE:
-                if(val_str == NULL){
+
+                if(args[0] == NULL){
                     printf("error\n");
                     break;
                 }
                 
-                value = (uint32_t)atoi(val_str);
+                value = (uint32_t)atoi(args[0]);
                 containers[DEQUE].push_front(&containers[DEQUE], value);
                 break;  
             
             case CMD_PUSH_BACK_DEQUE:
-                if(val_str == NULL){
+
+                if(args[0] == NULL){
                     printf("error\n");
                     break;
                 }
                 
-                value = (uint32_t)atoi(val_str);
+                value = (uint32_t)atoi(args[0]);
                 containers[DEQUE].push_back(&containers[DEQUE], value);
                 break;
                 
@@ -861,6 +860,23 @@ int main(void)
                 containers[STACK].print_all(&containers[STACK]);
                 containers[QUEUE].print_all(&containers[QUEUE]);
                 containers[DEQUE].print_all(&containers[DEQUE]);
+                break;
+
+            case CMD_CLEAR_CONTAINER:
+
+                if(args[0] == NULL) { 
+                    printf("error\n");
+                } else {
+                    container_type = search_type_table(args[0]);
+
+                    if(container_type == ERR_TYPE) {
+                        printf("error\n");
+                        break;
+                    }
+
+                    containers[container_type].clear(&containers[container_type]);
+                }
+                
                 break;
                 
             /*INVALID INPUT*/        
